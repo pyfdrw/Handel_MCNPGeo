@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <iostream>
 #include <cstdio>
 #include <string>
@@ -7,6 +8,9 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <vector>
+
+const float TOTALWEIGHT[10] = {63000, 54000, 55000, 50000, 32000, 32000, 19000, 19000, 10000, 10000};
+const float SKINWEIGHT[10] = {2400, 1800, 2200, 1700, 1200, 1200, 775, 775, 450, 450};
 
 typedef struct McnpFillStruct
 {

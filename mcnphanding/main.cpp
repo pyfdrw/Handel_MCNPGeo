@@ -11,7 +11,7 @@ int main()
 	storeGeo(mcnpfileA, mcnpgeoA);
 
 	// 储存密度和材料信息
-    /* extern float ORGANSDESTINY[151];
+    extern float ORGANSDESTINY[151];
     extern int ORGANMATERIAL[151];
     storeDensityAndMaterial(ORGANSDESTINY, ORGANMATERIAL, inputpath);
     ORGANMATERIAL[8] = 1; //something wrong with ORGANMATERIAL[8] */
@@ -27,17 +27,17 @@ int main()
 	//}
 	//organCopy(69, 67, mcnpgeoA);
 	//organCopy(63, 65, mcnpgeoA);
-    //organCopy(62, 64, mcnpgeoA);
+    organCopy(62, 64, mcnpgeoA);
 	//organCopy(69, 67, mcnpgeoA);
 	//organCopy(63, 65, mcnpgeoA);
-	//lenceGen(inputpath, 66, 67, mcnpgeoA);
-	//lenceGen(inputpath, 68, 69, mcnpgeoA);
+	lenceGen(inputpath, 66, 67, mcnpgeoA);
+	lenceGen(inputpath, 68, 69, mcnpgeoA);
 	//adjustAdrenal(1, 6.896, mcnpgeoA);
 	//adjustAdrenal(2, 6.696, mcnpgeoA);
     //adjustlence(66, 0.19, mcnpgeoA);
     //adjustlence(68, 0.19, mcnpgeoA);
 
-	//volAdjust(inputpath, mcnpgeoA);
+	volAdjust(inputpath, mcnpgeoA);
 
     //calBox(mcnpgeoA, 66); //计算包围盒
     //calBox(mcnpgeoA, 67);
@@ -68,7 +68,7 @@ int main()
 
 	// Output 
 	outputGeo(mcnpgeoA);
-	/* genForms(inputpath, mcnpgeoA); */
+	genForms(inputpath, mcnpgeoA);
 	fclose(mcnpfileA);
 	return 0;
 }

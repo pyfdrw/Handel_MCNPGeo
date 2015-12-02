@@ -292,6 +292,13 @@ int outputGeo(McnpFillStruct mcnpgeo999)
 		{
 			sscanf(linetmp, "%d", &organname);
 			sscanf(linetmp, "%*s%[^\n]", namelist + 80 * organname);
+			for (int i = 0; i < 80; i++)
+			{
+				if ('	' == *(namelist + 80 * organname + i))
+				{
+					*(namelist + 80 * organname + i) = ' ';
+				}
+			}
 		}
 	}
 
@@ -410,8 +417,13 @@ int outputGeo(McnpFillStruct mcnpgeo999)
 	for (int i = 0; i < 200; i++)  *(organscount + i) = 0;
 	for (int i = 0; i < mcnpgeo999.voxelcount; i++)
 		*(organscount + *(mcnpgeo999.element + i)) = *(organscount + *(mcnpgeo999.element + i)) + 1;
+	int outnumcount = 0;
 	for (int i = 0; i < 200; i++)
 	{
+		// if (0 == *(organscount+i)) //体积为0的器官不能用来计数
+		// {
+		// 	continue;
+		// }
 		if ('\0' != *(namelist + i * 80))
 		{
 			fprintf(outputfile, "%-5d %-5d %-5d %s %-4d %s %-12.4f %s %-10d", \
@@ -419,9 +431,11 @@ int outputGeo(McnpFillStruct mcnpgeo999)
 
 			fprintf(outputfile, "  %s", (namelist + i * 80));
 			fputc('\n', outputfile);
+			outnumcount++;
 		}
 	}
 
+	std::cout << "======= " << outnumcount << "organs was outputed=========" << std::endl;
 	//surface cards
 	fputc('\n', outputfile);
 	fprintf(outputfile, "%s", "C ******************************************************************************\n");
@@ -1022,14 +1036,15 @@ void volAdjust(char* inputpath, McnpFillStruct mcnpgeo999)
 	{
 		if (real[i] != -1)
 		{
-			if (fabs(real[i] - ref[i]) / ref[i] >= 0.01)
+			if (fabs(real[i] - ref[i]) / ref[i] >= 0.001)
 			{
-				std::cout << "Organ " << i << "relative error >= 1%"  << fabs(real[i] - ref[i]) / ref[i] << std::endl;
+				std::cout << "Organ " << i << "relative error >= 0.1% ("  << fabs(real[i] - ref[i]) / ref[i] << ')' << std::endl;
 			}
 		}
 	}
 
 	//bilateral check
+	//确保两边器官体积是相似的
 	if (fabs(real[1] - real[2]) / real[2] >= 0.05)
 	{
 		std::cout << "Organ " << 1 << "didn't pass bilateral check" << std::endl;
@@ -1608,10 +1623,21 @@ void genForms(char* inputpath, McnpFillStruct mcnpgeo999)
 
     //生成密度信息表
     float skinweighttmp; float bodyweighttmp;
-    std::cout << "\nPlease input weight of skin(125)" << std::endl;
-    std::cin >> skinweighttmp;
-    std::cout << "Please input weight of whole body" << std::endl;
-    std::cin >> bodyweighttmp;
+    // std::cout << "\nPlease input weight of skin(125)" << std::endl;
+    // std::cin >> skinweighttmp;
+    // std::cout << "Please input weight of whole body" << std::endl;
+    // std::cin >> bodyweighttmp;
+	int agetmp = 0;
+	std::cout << "Input Age: (1 AM, 2 AF, 3 15M, 4 15F, 5 10M, 6 10F, 7 5M, 8 5F, 9 1M, 10 1F)" << std::endl;
+	std::cin >> agetmp;
+	if (agetmp > 10 || agetmp < 0)
+	{
+		std::cout << "------------Invalid input--------------" << std::endl;
+		std::cout << "Assume skinweighttmp = 0; bodyweighttmp = 0;" << std::endl;
+		skinweighttmp = 0; bodyweighttmp = 0;
+	}
+	agetmp -= 1;
+	bodyweighttmp = TOTALWEIGHT[agetmp]; skinweighttmp = SKINWEIGHT[agetmp];
 
     fprintf(infofile, "\n\n===========destiny & material info===========\n");
     char* dirpath = new char[500]; *dirpath = '\0';// store the dir that name.txt located in 
